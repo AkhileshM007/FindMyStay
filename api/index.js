@@ -12,10 +12,10 @@ import messageRouter from "./routes/message.routes.js";
 dotenv.config();
 const port = process.env.PORT || 5000;
 
-console.log(process.env.MONGO);
+console.log(process.env.MONGO_URI);
 
 mongoose
-  .connect(process.env.MONGO)
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Connected to MongoDB");
   })
@@ -29,19 +29,16 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.listen(port, () => {
-  console.log("Server is running on port ", port);
-});
-
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
 app.use("/api/message", messageRouter); // <-- Register message routes
 
+// Serve static files from the frontend build (if needed)
 app.use(express.static(path.join(__dirname, "/client/dist")));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+  res.sendFile(path.join(__dirname, "/client/dist/index.html"));
 });
 
 app.use((err, req, res, next) => {
@@ -52,4 +49,8 @@ app.use((err, req, res, next) => {
     statusCode,
     message,
   });
+});
+
+app.listen(port, () => {
+  console.log("Server is running on port ", port);
 });
