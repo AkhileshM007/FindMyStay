@@ -2,7 +2,6 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import path from "path";
 
 import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
@@ -23,8 +22,6 @@ mongoose
     console.log("Error: " + err);
   });
 
-const __dirname = path.resolve();
-
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -34,12 +31,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
 app.use("/api/message", messageRouter);
 
-// Serve static files from the frontend build (if needed)
-app.use(express.static(path.join(__dirname, "/client/dist")));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "/client/dist/index.html"));
-});
+// Remove static file serving and catch-all for SPA
+// Let Nginx serve the frontend and handle non-API routes
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
