@@ -1,39 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
-import { useSelector } from "react-redux";  
+import { useSelector } from "react-redux";
 
 import {
-    FaBath,
-    FaBed,
-    FaChair,
-    FaMapMarkedAlt,
-    FaMapMarkerAlt,
-    FaParking,
-    FaShare,
-  } from 'react-icons/fa';
-import Contact from "../components/Contact";
+  FaBath,
+  FaBed,
+  FaChair,
+  FaMapMarkedAlt,
+  FaMapMarkerAlt,
+  FaParking,
+  FaShare,
+} from 'react-icons/fa';
 
 const Listing = () => {
   SwiperCore.use([Navigation]);
 
   const params = useParams();
+  const navigate = useNavigate();
 
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-    const [copied, setCopied] = useState(false);
-    const [contact, setContact] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-
-
-
-    const { currentUser } = useSelector((state) => state.user);
-
-  console.log(listing);
+  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -95,12 +89,11 @@ const Listing = () => {
             />
           </div>
 
-            {copied && (
-                <p className='fixed top-[23%] right-[5%] z-10 rounded-md bg-slate-100 p-2'>Link Copied!</p>
-            )}
+          {copied && (
+            <p className='fixed top-[23%] right-[5%] z-10 rounded-md bg-slate-100 p-2'>Link Copied!</p>
+          )}
 
-
-            <div className='flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4'>
+          <div className='flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4'>
             <p className='text-2xl font-semibold'>
               {listing.name} - ${''}
               {listing.offer
@@ -148,17 +141,22 @@ const Listing = () => {
                 {listing.furnished ? 'Furnished' : 'Unfurnished'}
               </li>
             </ul>
-            
-            {currentUser && listing.userRef !== currentUser._id && !contact && (
-                <button
-                    onClick = {() => setContact(true)}
-                    className="bg-slate-700 text-white rounded-lg uppercase p-3 hover:opacity-95"
-                >Contact Landlord</button>
+
+            {/* Enquire Now Button - visible to anyone except the owner */}
+            {(!currentUser || listing.userRef !== currentUser._id) && (
+              <button
+                onClick={() =>
+                  navigate(
+                    `/listing/${listing._id}/messages?userId=${listing.userRef}${!currentUser ? "&enquiryOnly=true" : ""}`
+                  )
+                }
+                className="bg-blue-600 text-white rounded-lg uppercase p-3 hover:opacity-95 mt-2"
+              >
+                Enquire Now!
+              </button>
             )}
-            
-            {contact && <Contact listing={listing} /> }
 
-
+            {/* Removed Contact Landlord Button and Contact component */}
           </div>
         </div>
       )}

@@ -1,18 +1,18 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import userRouter from "./routes/user.route.js";
-import authRouter from "./routes/auth.route.js";
 import cookieParser from "cookie-parser";
-import listingRouter from "./routes/listing.route.js";
 import path from "path";
 
+import userRouter from "./routes/user.route.js";
+import authRouter from "./routes/auth.route.js";
+import listingRouter from "./routes/listing.route.js";
+import messageRouter from "./routes/message.routes.js";
 
 dotenv.config();
 const port = process.env.PORT || 5000;
 
 console.log(process.env.MONGO);
-
 
 mongoose
   .connect(process.env.MONGO)
@@ -36,6 +36,7 @@ app.listen(port, () => {
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
+app.use("/api/message", messageRouter); // <-- Register message routes
 
 app.use(express.static(path.join(__dirname, "/client/dist")));
 
