@@ -32,7 +32,7 @@ app.use(cookieParser());
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
-app.use("/api/message", messageRouter); // <-- Register message routes
+app.use("/api/message", messageRouter);
 
 // Serve static files from the frontend build (if needed)
 app.use(express.static(path.join(__dirname, "/client/dist")));
@@ -51,6 +51,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(port, () => {
+// Listen on all interfaces, not just localhost
+app.listen(port, '0.0.0.0', () => {
   console.log("Server is running on port ", port);
 });
