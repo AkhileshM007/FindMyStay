@@ -1,4 +1,3 @@
-// filepath: Jenkinsfile
 pipeline {
     agent any // This means Jenkins can use any available agent/node to run this pipeline.
 
@@ -43,10 +42,7 @@ pipeline {
 
         stage('Cleanup Docker (Optional)') {
             // This stage cleans up dangling images to save disk space.
-            // It runs only if the previous stages were successful.
-            when {
-                success()
-            }
+            // It will only run if the 'Build and Deploy Docker Containers' stage (and 'Checkout Code') succeeded.
             steps {
                 echo 'Cleaning up unused Docker images...'
                 // '|| true' to prevent failure if there's nothing to prune
