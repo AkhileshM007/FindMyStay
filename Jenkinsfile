@@ -20,16 +20,33 @@ pipeline {
             steps {
                 script {
                     // Ensure we are in the correct directory where docker-compose.yml exists
-                    // If your Jenkins job checks out into a subdirectory named after the repo,
-                    // you might need to cd into it. But 'checkout scm' usually sets the workspace root correctly.
-                    // dir(env.PROJECT_ROOT_DIR) { // Use this if you need to change directory
+                    // Jenkins usually sets the workspace root correctly after 'checkout scm'.
+                    // dir(env.PROJECT_ROOT_DIR) { // Use this if you explicitly need to change directory
 
                         echo 'Stopping existing containers (if any)...'
                         // '|| true' ensures the command doesn't fail the pipeline if no containers are running
                         sh 'docker-compose down || true'
 
-                        echo 'Building Docker images (no cache for fresh build)...'
-                        sh 'docker-compose build --no-cache'
+                        echo 'Cleaning up Docker system aggressively before build attempt...'
+                        // Add sudo if your jenkins user needs it to prune system-wide Docker resources.
+                        // If your Jenkins user is in the docker group, sudo might not be needed for docker commands.
+                        sh 'sudo docker system prune -af || true'
+
+                        echo 'Building backend service...'
+                        // Service name 'backend' comes from your docker-compose.yml
+                        sh 'docker-compose build --no-cache backend'
+
+                        echo 'Cleaning up Docker images after backend build...'
+                        // Add sudo if needed
+                        sh 'sudo docker image prune -af || true'
+
+                        echo 'Building frontend service...'
+                        // Service name 'frontend' comes from your docker-compose.yml
+                        sh 'docker-compose build --no-cache frontend'
+
+                        // Optional: Clean up again if you have more services or for general tidiness
+                        // echo 'Cleaning up Docker images after frontend build...'
+                        // sh 'sudo docker image prune -af || true' // Add sudo if needed
 
                         echo 'Starting new containers in detached mode...'
                         sh 'docker-compose up -d'
@@ -46,7 +63,8 @@ pipeline {
             steps {
                 echo 'Cleaning up unused Docker images...'
                 // '|| true' to prevent failure if there's nothing to prune
-                sh 'docker image prune -af || true'
+                // Using 'sudo' here as well, for consistency if needed for other prune commands.
+                sh 'sudo docker image prune -af || true'
             }
         }
     }

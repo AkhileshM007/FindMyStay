@@ -1,0 +1,10 @@
+# filepath: client/.dockerignore
+.git
+node_modules
+build
+dist
+.env
+npm-debug.log
+yarn-error.log
+.DS_Store
+.vscode

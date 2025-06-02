@@ -1,0 +1,34 @@
+# Git repository files
+.git
+.gitignore
+
+# Node.js dependencies - these will be installed inside the container
+node_modules
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Environment variables file (should be injected, not built into image)
+.env
+.env.*
+!/.env.example
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# IDE/editor specific folders
+.vscode/
+.idea/
+
+# Test files (if you don't run tests inside the Docker build for the final image)
+# coverage/
+# *.test.js
+# *.spec.js
+
+# Any build output if you were using TypeScript and compiling to a 'dist' folder
+# dist/
+# build/
