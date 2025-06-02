@@ -8,6 +8,7 @@ services:
     environment:
       - NODE_ENV=production
       - MONGO_URI=mongodb+srv://ak007:ak007@cluster0.6knv2.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - JWT_SECRET=abcdefg
       # If your application expects a different variable name, use that, e.g.:
       # - DATABASE_URL=your_mongodb_connection_string
 
