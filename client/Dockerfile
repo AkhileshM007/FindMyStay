@@ -7,11 +7,11 @@ WORKDIR /app
 # Copy package.json and package-lock.json (or yarn.lock)
 COPY package*.json ./
 
-# Install dependencies, build, and clean cache in the same layer
-# Use --omit=dev if your build script doesn't require devDependencies
-# Use npm ci for faster, more reliable builds if you have a package-lock.json
-# RUN npm ci --omit=dev && npm cache clean --force
-RUN npm install --omit=dev && npm cache clean --force
+# Install ALL dependencies (including devDependencies like vite)
+# Then clean the cache
+RUN npm install && npm cache clean --force
+# Or, if you use npm ci and have a package-lock.json:
+# RUN npm ci && npm cache clean --force
 
 # Copy the rest of the application code
 COPY . .
