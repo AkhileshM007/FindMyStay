@@ -63,7 +63,7 @@ export default function Home() {
           to={'/search'}
           className='text-xs sm:text-sm text-blue-800 font-bold hover:underline'
         >
-          Start your search now!
+          Lets Get Started
         </Link>
       </div>
 
